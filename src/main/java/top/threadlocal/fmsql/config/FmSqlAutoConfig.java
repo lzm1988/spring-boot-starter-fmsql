@@ -23,7 +23,6 @@ public class FmSqlAutoConfig {
     @ConditionalOnClass(PropertiesSercice.class)
     PropertiesSercice propertiesSercice(){
         PropertiesSercice propertiesSercice = new PropertiesSercice();
-        propertiesSercice.setSqlLocation(fmSqlProperties.getSqlLocation());
         propertiesSercice.setProperties();
         return propertiesSercice;
     }

@@ -4,6 +4,7 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -15,17 +16,10 @@ import java.util.Properties;
 @Service(value = "propertiesSercice")
 public class PropertiesSercice {
 
-    private String sqlLocation ;
+    @Autowired
+    FMSqlProperties fmSqlProperties;
 
     private Properties properties = null;
-
-    public String getSqlLocation() {
-        return sqlLocation;
-    }
-
-    public void setSqlLocation(String sqlLocation) {
-        this.sqlLocation = sqlLocation;
-    }
 
     public Properties getProperties() {
         return properties;
@@ -34,7 +28,7 @@ public class PropertiesSercice {
     public void setProperties(){
         System.out.println("加载sql文件");
         properties = new Properties();
-        String dir = Thread.currentThread().getContextClassLoader().getResource(getSqlLocation()).getPath();
+        String dir = Thread.currentThread().getContextClassLoader().getResource(fmSqlProperties.getSqlLocation()).getPath();
         //String dir = Thread.currentThread().getContextClassLoader().getResource("/sql").getPath();
         File file = new File(dir);
         List<File> sqlList = new ArrayList<File>();

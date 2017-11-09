@@ -4,6 +4,8 @@ import freemarker.cache.StringTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +15,11 @@ import java.util.Map;
 
 @Service(value = "freemarkerService")
 public class FreemarkerService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(FreemarkerService.class);
+
+    @Autowired
+    FMSqlProperties fmSqlProperties;
 
     @Autowired
     PropertiesSercice propertiesSercice;
@@ -27,6 +34,10 @@ public class FreemarkerService {
             Template template = cfg.getTemplate(sqlId);
             StringWriter writer = new StringWriter();
             template.process(param, writer);
+            String sql = writer.toString();
+            if (fmSqlProperties.getShowSql()){
+                LOGGER.info(sql);
+            }
             return writer.toString();
         } catch (TemplateException e) {
             throw new RuntimeException("Parse sql failed", e);
