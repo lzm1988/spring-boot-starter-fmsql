@@ -24,7 +24,7 @@ public class FreemarkerService {
     @Autowired
     PropertiesSercice propertiesSercice;
 
-    public String getSql(String sqlId, Map<String, ?> param) {
+    public String getSql(String sqlId, Map<String, Object> param) {
         try {
             Configuration cfg = new Configuration();
             StringTemplateLoader sTmpLoader = new StringTemplateLoader();
@@ -33,16 +33,20 @@ public class FreemarkerService {
             cfg.setDefaultEncoding("UTF-8");
             Template template = cfg.getTemplate(sqlId);
             StringWriter writer = new StringWriter();
+
+            for (Map.Entry<String, Object> entry : param.entrySet()) {
+                String val = entry.getValue().toString().replaceAll("'","\\\\'");
+                entry.setValue(val);
+            }
+
             template.process(param, writer);
             String sql = writer.toString();
             if (fmSqlProperties.getShowSql()){
                 LOGGER.info(sql);
             }
             return writer.toString();
-        } catch (TemplateException e) {
-            throw new RuntimeException("Parse sql failed", e);
-        } catch (IOException e) {
-            throw new RuntimeException("Parse sql failed", e);
+        } catch (TemplateException | IOException e) {
+            throw new RuntimeException("parse sql error!",e);
         }
     }
 

@@ -53,7 +53,12 @@ public class PropertiesSercice {
     }
 
     public String getSql(String sqlId){
-        return getProperties().get(sqlId).toString();
+        Object sql = getProperties().get(sqlId);
+        if (null == sql){
+            throw new RuntimeException("Cann't find sql!");
+        }else{
+            return sql.toString();
+        }
     }
 
 }

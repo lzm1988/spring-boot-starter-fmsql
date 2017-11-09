@@ -2,10 +2,16 @@ package top.threadlocal.fmsql.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Service;
 import top.threadlocal.fmsql.utils.ConvertUtil;
 
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,13 +20,29 @@ import java.util.Map;
 public class DbClient {
 
     @Autowired
-    NamedParameterJdbcTemplate jdbcTemplate;
+    NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+    @Autowired
+    JdbcTemplate jdbcTemplate;
 
     @Autowired
     FreemarkerService freemarkerService;
 
     @Autowired
     PropertiesSercice propertiesSercice;
+
+    public long insertGetId(String sqlId, Map<String,Object> params){
+
+        String sql = freemarkerService.getSql(sqlId,params);
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        PreparedStatementCreator preparedStatementCreator = con -> {
+            PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            return ps;
+        };
+
+        jdbcTemplate.update(preparedStatementCreator, keyHolder);
+        return keyHolder.getKey().longValue();
+    }
 
     /**
      * 根据sql的唯一标识查询列表
@@ -30,10 +52,10 @@ public class DbClient {
      * @param <T>
      * @return
      */
-    public <T> List<T> queryForList(String sqlId, Map<String,?> params,Class<T> cls){
+    public <T> List<T> queryForList(String sqlId, Map<String,Object> params,Class<T> cls){
 
         String sql = freemarkerService.getSql(sqlId,params);
-        List<T> resultList = jdbcTemplate.query(sql,params,new BeanPropertyRowMapper<T>(cls));
+        List<T> resultList = namedParameterJdbcTemplate.query(sql,params,new BeanPropertyRowMapper<T>(cls));
         return resultList;
     }
 
@@ -45,10 +67,10 @@ public class DbClient {
      * @param <T>
      * @return
      */
-    public <T> T queryForObject(String sqlId, Map<String,?> params,Class<T> cls){
+    public <T> T queryForObject(String sqlId, Map<String,Object> params,Class<T> cls){
 
         String sql  = freemarkerService.getSql(sqlId,params);
-        T t = jdbcTemplate.queryForObject(sql,params, cls);
+        T t = namedParameterJdbcTemplate.queryForObject(sql,params, cls);
         return t;
     }
 
@@ -58,10 +80,10 @@ public class DbClient {
      * @param params
      * @return
      */
-    public int execute(String sqlId, Map<String,?> params){
+    public int execute(String sqlId, Map<String,Object> params){
 
         String sql = freemarkerService.getSql(sqlId,params);
-        return jdbcTemplate.update(sql,params);
+        return namedParameterJdbcTemplate.update(sql,params);
     }
 
     /**
@@ -77,7 +99,10 @@ public class DbClient {
             param = paramsArr[0];
         }
         String sql = freemarkerService.getSql(sqlId,param);
-        return jdbcTemplate.batchUpdate(sql, paramsArr != null ? paramsArr : new Map[0]);
+        if(null == sql || "".equals(sql)){
+            throw new RuntimeException("sql must not be null!");
+        }
+        return namedParameterJdbcTemplate.batchUpdate(sql, paramsArr != null ? paramsArr : new Map[0]);
     }
 
     /**
@@ -97,7 +122,10 @@ public class DbClient {
             param = paramArr[0];
         }
         String sql = freemarkerService.getSql(sqlId,param);
-        return jdbcTemplate.batchUpdate(sql, paramArr != null ? paramArr : new Map[0]);
+        if(null == sql || "".equals(sql)){
+            throw new RuntimeException("sql must not be null!");
+        }
+        return namedParameterJdbcTemplate.batchUpdate(sql, paramArr != null ? paramArr : new Map[0]);
     }
 
     /**
@@ -112,7 +140,10 @@ public class DbClient {
             param = paramsArr[0];
         }
         String sql = freemarkerService.getSql(sqlId,param);
-        return jdbcTemplate.batchUpdate(sql, paramsArr != null ? paramsArr : new Map[0]);
+        if(null == sql || "".equals(sql)){
+            throw new RuntimeException("sql must not be null!");
+        }
+        return namedParameterJdbcTemplate.batchUpdate(sql, paramsArr != null ? paramsArr : new Map[0]);
     }
 
     /**
@@ -132,7 +163,10 @@ public class DbClient {
             param = paramArr[0];
         }
         String sql = freemarkerService.getSql(sqlId,param);
-        return jdbcTemplate.batchUpdate(sql, paramArr != null ? paramArr : new Map[0]);
+        if(null == sql || "".equals(sql)){
+            throw new RuntimeException("sql must not be null!");
+        }
+        return namedParameterJdbcTemplate.batchUpdate(sql, paramArr != null ? paramArr : new Map[0]);
     }
 
 }
