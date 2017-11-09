@@ -19,16 +19,12 @@ public class FmSqlAutoConfig {
     @Autowired
     FMSqlProperties fmSqlProperties;
 
-    @Bean
-    @ConditionalOnClass(PropertiesSercice.class)
-    PropertiesSercice propertiesSercice(){
-        PropertiesSercice propertiesSercice = new PropertiesSercice();
-        propertiesSercice.setProperties();
-        return propertiesSercice;
-    }
+    @Autowired
+    PropertiesSercice propertiesSercice;
 
     @Bean
     DbClient dbClient(){
+        propertiesSercice.setProperties();
         return new DbClient();
     }
 
