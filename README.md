@@ -18,3 +18,17 @@ pom.xml
 ```
 @ComponentScan({"你自己的包","top.threadlocal.fmsql"})
 ```
+
+5.配置项
+```
+#开启fmsql
+fmsql.enabled=true
+#sql的xml文件所在位置，resource目录下
+fmsql.sql-location=sqlMap
+#显示sql
+fmsql.show-sql=true
+#显示sql执行时间
+fmsql.show-time=true
+```
+6.待续。。。
+
