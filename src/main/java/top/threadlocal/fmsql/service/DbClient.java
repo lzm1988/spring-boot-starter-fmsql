@@ -31,6 +31,13 @@ public class DbClient {
     @Autowired
     PropertiesSercice propertiesSercice;
 
+    public long insertDetId(String sqlId,Object paramObj){
+
+        Map<String,Object> map = new HashMap<String, Object>();
+        ConvertUtil.objToMap(paramObj,map);
+        return insertGetId(sqlId,map);
+    }
+
     public long insertGetId(String sqlId, Map<String,Object> params){
 
         String sql = freemarkerService.getSql(sqlId,params);
@@ -116,7 +123,7 @@ public class DbClient {
         if (null == list){
             throw new RuntimeException("input list is null");
         }
-        Map<String, Object>[] paramArr = ConvertUtil.listToMap(list);
+        Map<String, Object>[] paramArr = ConvertUtil.listToMapArr(list);
         Map<String,Object> param = new HashMap<String,Object>(1);
         if (null != paramArr && paramArr.length >0 && null != paramArr[0]){
             param = paramArr[0];
@@ -157,7 +164,7 @@ public class DbClient {
         if (null == list){
             throw new RuntimeException("input list is null");
         }
-        Map<String, Object>[] paramArr = ConvertUtil.listToMap(list);
+        Map<String, Object>[] paramArr = ConvertUtil.listToMapArr(list);
         Map<String,Object> param = new HashMap<String,Object>(1);
         if (null != paramArr && paramArr.length >0 && null != paramArr[0]){
             param = paramArr[0];
