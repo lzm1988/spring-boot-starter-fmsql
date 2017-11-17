@@ -31,7 +31,7 @@ public class DbClient {
     @Autowired
     PropertiesSercice propertiesSercice;
 
-    public long insertDetId(String sqlId,Object paramObj){
+    public long insertGetId(String sqlId,Object paramObj){
 
         Map<String,Object> map = new HashMap<String, Object>();
         ConvertUtil.objToMap(paramObj,map);
